@@ -1,0 +1,8 @@
+@keyframes slideInBottom {
+    0% {
+        bottom: -100vh;
+    }
+    100% {
+        bottom: 0;
+    }
+}
