@@ -1,102 +1,153 @@
 <template>
   <div style="width: 100%; height: 100vh" class="project-gallery">
-    <div class="previous-page">nastepna strona</div>
-    <div class="next-page">poprzednia strona</div>
-    <div class="gallery">
-      <div class="one-image-row">
-        <img src="../assets/p2img1.png">
-      </div>
-      <div class="two-image-row">
-        <img src="../assets/p5imgvertical.png">
-        <img src="../assets/p5imgvertical.png">
-      </div>
-      <div></div>
+    <div class="page-btn previous-page" @click="nextPage" v-if="currentProjectIndex < galleries.length-1">nastepna
+      strona
     </div>
-    <div class="description">
-      <div class="description-header">P R O F I D E A - K R A K Ó W 2 0 2 0</div>
-      <div class="description-body">Projekt i realizacja wyposażenia wnętrza
-        showroom’u rowerowego. Lorem ipsum dolor sit
-        amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis
-        nostrud exercitation ullamco laboris nisi ut
+    <div class="page-btn next-page" @click="previousPage" v-if="currentProjectIndex > 0">poprzednia strona</div>
+    <div class="project-gallery-images-wrapper">
+      <div v-for="(gallery, index) of galleries" :key="index">
+        <ProjectGalleryImages
+            :left="gallery.left === 0 ? gallery.left : gallery.left + 'vw'"
+            :animate-left="gallery.animateLeft"
+            :animate-right="gallery.animateRight"
+            :z-index="gallery.zIndex"
+        ></ProjectGalleryImages>
       </div>
-      <div class="description-link">www.profidea.pl</div>
+    </div>
+    <div class="project-gallery-desc-wrapper">
+      <div v-for="(desc, index) of descriptions" :key="index">
+        <ProjectGalleryDescription
+            :left="desc.left === 0 ? desc.left : desc.left + 'vw'"
+            :animate-left="desc.animateLeft"
+            :animate-right="desc.animateRight"
+            :z-index="desc.zIndex"
+        ></ProjectGalleryDescription>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ProjectGalleryImages from "@/components/ProjectGalleryImages";
+import ProjectGalleryDescription from "@/components/ProjectGalleryDescription";
+
 export default {
-  name: "Project"
+  name: "Project",
+  components: {ProjectGalleryImages, ProjectGalleryDescription},
+  data: function () {
+    return {
+      currentProjectIndex: 0,
+      galleries: [{show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5},
+        {show: true, left: 66, animateLeft: false, animateRight: false, zIndex: 5},
+        {show: true, left: 132, animateLeft: false, animateRight: false, zIndex: 5}
+      ],
+      descriptions: [{show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5},
+        {show: true, left: 34, animateLeft: false, animateRight: false, zIndex: 5},
+        {show: true, left: 68, animateLeft: false, animateRight: false, zIndex: 5}
+      ],
+      zIndex: 5,
+      isAnimationOngoing: false
+    }
+  },
+  methods: {
+    nextPage() {
+      if (!this.isAnimationOngoing) {
+        this.isAnimationOngoing = true;
+        this.currentProjectIndex++;
+        this.galleries[this.currentProjectIndex].animateRight = true;
+        this.galleries[this.currentProjectIndex].zIndex = ++this.zIndex;
+        this.descriptions[this.currentProjectIndex].animateRight = true;
+        this.descriptions[this.currentProjectIndex].zIndex = ++this.zIndex;
+        setTimeout(() => {
+          this.galleries.forEach(gallery => {
+            gallery.left = gallery.left - 66;
+          })
+          this.descriptions.forEach(desc => {
+            desc.left = desc.left - 34;
+          })
+          this.galleries[this.currentProjectIndex].animateRight = false;
+          this.descriptions[this.currentProjectIndex].animateRight = false;
+          this.isAnimationOngoing = false;
+        }, 1100)
+      }
+    },
+    previousPage() {
+      if (!this.isAnimationOngoing) {
+        this.isAnimationOngoing = true;
+        this.currentProjectIndex--;
+        this.galleries[this.currentProjectIndex].animateLeft = true;
+        this.galleries[this.currentProjectIndex].zIndex = ++this.zIndex;
+        this.descriptions[this.currentProjectIndex].animateLeft = true;
+        this.descriptions[this.currentProjectIndex].zIndex = ++this.zIndex;
+        setTimeout(() => {
+          this.galleries.forEach(gallery => {
+            gallery.left = gallery.left + 66;
+          })
+          this.descriptions.forEach(desc => {
+            desc.left = desc.left + 34;
+          })
+          this.galleries[this.currentProjectIndex].animateLeft = false;
+          this.descriptions[this.currentProjectIndex].animateLeft = false;
+          this.isAnimationOngoing = false;
+        }, 1100)
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
+@import "../styles/animation.css";
+
 .project-gallery {
   position: relative;
   display: flex;
   flex-direction: row;
 }
 
-.next-page {
+.page-btn {
+  cursor: pointer;
+  font-weight: bold;
+  transform-origin: right;
+  font-size: 2rem;
+  text-transform: uppercase;
   position: absolute;
+  z-index: 20000;
+  backface-visibility: hidden;
+}
+
+.next-page {
+  display: inline-block;
+  top: 60vh;
+  transform: translateX(-100%) rotate(-90deg);
+  left: 1vw;
 }
 
 .previous-page {
-  position: absolute;
+  display: inline-block;
+  top: 73vh;
+  transform: translateX(-100%) rotate(-270deg);
+  white-space: nowrap;
+  left: 99vw;
 }
 
-.gallery {
+.project-gallery-images-wrapper {
   overflow: hidden;
-  overflow-y: scroll;
-  padding: 3vw 3vw;
   width: 66vw;
   height: inherit;
-  background-color: grey;
+  position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
-.gallery::-webkit-scrollbar {
+.project-gallery-images-wrapper::-webkit-scrollbar {
   display: none;
 }
 
-.one-image-row {
-  padding-bottom: 3vw;
-}
-
-.one-image-row img {
-  width: 60vw;
-}
-
-.two-image-row {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 3vw;
-}
-
-.two-image-row img {
-  width: 29vw;
-}
-
-.description {
-  margin-top: 15rem;
-  height: inherit;
+.project-gallery-desc-wrapper {
+  overflow: hidden;
   width: 34vw;
-  background-color: white;
-  padding: 3rem;
-}
-
-.description-header {
-  font-size: 2.4rem;
-}
-
-.description-body {
-  margin-top: 3rem;
-  font-size: 1.6rem;
-}
-
-.description-link {
-  margin-top: 3rem;
-  font-size: 1.6rem;
+  height: inherit;
+  position: relative;
 }
 </style>
