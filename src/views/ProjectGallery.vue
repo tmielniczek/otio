@@ -11,6 +11,7 @@
             :animate-left="gallery.animateLeft"
             :animate-right="gallery.animateRight"
             :z-index="gallery.zIndex"
+            :background-animation="gallery.backgroundAnimation"
         ></ProjectGalleryImages>
       </div>
     </div>
@@ -21,6 +22,7 @@
             :animate-left="desc.animateLeft"
             :animate-right="desc.animateRight"
             :z-index="desc.zIndex"
+            :background-animation="desc.backgroundAnimation"
         ></ProjectGalleryDescription>
       </div>
     </div>
@@ -37,13 +39,14 @@ export default {
   data: function () {
     return {
       currentProjectIndex: 0,
-      galleries: [{show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5},
-        {show: true, left: 66, animateLeft: false, animateRight: false, zIndex: 5},
-        {show: true, left: 132, animateLeft: false, animateRight: false, zIndex: 5}
+      galleries: [{show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false},
+        {show: true, left: 66, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false},
+        {show: true, left: 132, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false}
       ],
-      descriptions: [{show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5},
-        {show: true, left: 34, animateLeft: false, animateRight: false, zIndex: 5},
-        {show: true, left: 68, animateLeft: false, animateRight: false, zIndex: 5}
+      descriptions: [
+        {show: true, left: 0, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false},
+        {show: true, left: 34, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false},
+        {show: true, left: 68, animateLeft: false, animateRight: false, zIndex: 5, backgroundAnimation: false}
       ],
       zIndex: 5,
       isAnimationOngoing: false
@@ -54,8 +57,10 @@ export default {
       if (!this.isAnimationOngoing) {
         this.isAnimationOngoing = true;
         this.currentProjectIndex++;
+        this.galleries[this.currentProjectIndex - 1].backgroundAnimation = true;
         this.galleries[this.currentProjectIndex].animateRight = true;
         this.galleries[this.currentProjectIndex].zIndex = ++this.zIndex;
+        this.descriptions[this.currentProjectIndex - 1].backgroundAnimation = true;
         this.descriptions[this.currentProjectIndex].animateRight = true;
         this.descriptions[this.currentProjectIndex].zIndex = ++this.zIndex;
         setTimeout(() => {
@@ -65,6 +70,8 @@ export default {
           this.descriptions.forEach(desc => {
             desc.left = desc.left - 34;
           })
+          this.galleries[this.currentProjectIndex - 1].backgroundAnimation = false;
+          this.descriptions[this.currentProjectIndex - 1].backgroundAnimation = false;
           this.galleries[this.currentProjectIndex].animateRight = false;
           this.descriptions[this.currentProjectIndex].animateRight = false;
           this.isAnimationOngoing = false;
@@ -76,8 +83,10 @@ export default {
         this.isAnimationOngoing = true;
         this.currentProjectIndex--;
         this.galleries[this.currentProjectIndex].animateLeft = true;
+        this.galleries[this.currentProjectIndex + 1].backgroundAnimation = true;
         this.galleries[this.currentProjectIndex].zIndex = ++this.zIndex;
         this.descriptions[this.currentProjectIndex].animateLeft = true;
+        this.descriptions[this.currentProjectIndex + 1].backgroundAnimation = true;
         this.descriptions[this.currentProjectIndex].zIndex = ++this.zIndex;
         setTimeout(() => {
           this.galleries.forEach(gallery => {
@@ -86,6 +95,8 @@ export default {
           this.descriptions.forEach(desc => {
             desc.left = desc.left + 34;
           })
+          this.galleries[this.currentProjectIndex + 1].backgroundAnimation = false;
+          this.descriptions[this.currentProjectIndex + 1].backgroundAnimation = false;
           this.galleries[this.currentProjectIndex].animateLeft = false;
           this.descriptions[this.currentProjectIndex].animateLeft = false;
           this.isAnimationOngoing = false;
