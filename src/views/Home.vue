@@ -22,21 +22,33 @@ export default {
       isProject: false,
       homeProjectAnimate: false,
       homeOverflowHidden: false,
-      backgroundAnimation: false
+      backgroundAnimation: false,
+      translateXValue: null
+    }
+  },
+  mounted() {
+    window.onpopstate = () => {
+      this.$refs.projectGallery.style.transform = `translateY(${this.translateXValue}px)`;
+      this.$refs.projectGallery.style.transition = 'transform 1s cubic-bezier(.7, 0, .2, 1)';
+      setTimeout(()=>{
+        this.isProject = false;
+        this.homeOverflowHidden = false;
+      }, 900)
     }
   },
   methods: {
     onImageClick() {
+      history.pushState(null, null, 'gallery')
       this.homeOverflowHidden = true;
-      window.onpopstate = () => {
-        this.isProject = false;
-      }
       this.isProject = true;
       this.$refs.homeBackground.style.top = -1 * document.getElementsByClassName('page-two')[0].getBoundingClientRect().top + 'px';
       this.backgroundAnimation = true;
       setTimeout(() => {
-        let translateXValue = window.innerHeight + document.getElementsByClassName('realizations')[0].getBoundingClientRect().top;
-        this.$refs.projectGallery.style.transform = `translateY(-${translateXValue}px)`;
+        this.$refs.projectGallery.ontransitionend = () => {
+          this.backgroundAnimation = false;
+        }
+        this.translateXValue = window.innerHeight + document.getElementsByClassName('realizations')[0].getBoundingClientRect().top;
+        this.$refs.projectGallery.style.transform = `translateY(-${this.translateXValue}px)`;
         this.$refs.projectGallery.style.transition = 'transform 1s cubic-bezier(.7, 0, .2, 1)';
         this.homeProjectAnimate = true
       }, 10)
@@ -86,6 +98,6 @@ export default {
 
 .backgroundAnimation {
   opacity: 1;
-  transition: opacity 1s cubic-bezier(.68, 0, .42, 1);
+  transition: opacity .3s cubic-bezier(.68, 0, .42, 1);
 }
 </style>
