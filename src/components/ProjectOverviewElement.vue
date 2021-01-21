@@ -5,16 +5,18 @@
        'project-overview--fade-out': isFadeOutAnimation
        }">
     <div class="page-item page-item--left">
-      <img class="item-img" :src="imageSrc" @click="$emit('img-click')">
+      <div class="img-wrapper">
+        <img class="item-img" :src="imageSrc" @click="$emit('img-click')" ref="itemImgLeft">
+      </div>
       <div class="text-box">
         <div class="text-header-wrapper">
-          <div class="text-header text-header-first"
+          <div class="text-header text-header-first text-header---left"
                v-bind:class="!isFirstProject || isProjectNotAnimated ? 'text-header-first--no-animation' : ''">PRODIFEA
             KRAKOW 2020
           </div>
         </div>
         <div class="text-wrapper">
-          <div class="text text-first"
+          <div class="text text-first text--left"
                v-bind:class="!isFirstProject || isProjectNotAnimated ? 'text-first--no-animation' : ''">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae culpa
             cupiditate doloribus eaque fugiat hic laborum modi molestiae neque nihil nobis, non nulla
@@ -27,14 +29,14 @@
     <div class="page-item page-item--right">
       <div class="page-item-content">
         <div class="text-box">
-          <div class="text-header-wrapper">
-            <div class="text-header text-header-first"
+          <div class="text-header-wrapper text-header-wrapper--right">
+            <div class="text-header text-header-first text-header---right"
                  v-bind:class="!isFirstProject || isProjectNotAnimated ? 'text-header-first--no-animation ' : ''"
             >PRODIFEA KRAKOW 2020
             </div>
           </div>
           <div class="text-wrapper">
-            <div class="text text-first"
+            <div class="text text-first text--right"
                  v-bind:class="!isFirstProject || isProjectNotAnimated ? 'text-first--no-animation' : ''">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae culpa
               cupiditate doloribus eaque fugiat hic laborum modi molestiae neque nihil nobis, non nulla
@@ -43,7 +45,9 @@
             </div>
           </div>
         </div>
-        <img class="item-img" :src="imageSrc">
+        <div class="img-wrapper">
+          <img class="item-img" :src="imageSrc" ref="itemImgRight">
+        </div>
       </div>
     </div>
   </div>
@@ -57,12 +61,18 @@ export default {
     return {}
   },
   mounted() {
+    this.$refs.itemImgLeft.ontransitionend = () => {
+      this.$refs.itemImgLeft.style.transitionDelay = '0s';
+    }
+    this.$refs.itemImgRight.ontransitionend = () => {
+      this.$refs.itemImgRight.style.transitionDelay = '0s';
+    }
     setTimeout(() => {
       const imageItemCollection = document.getElementsByClassName('item-img');
       Array.from(imageItemCollection).forEach(el => {
         el.style.maxWidth = '33vw';
       })
-    })
+    }, 100)
   }
 }
 </script>
@@ -97,15 +107,26 @@ export default {
 .page-item-content {
   display: flex;
   position: absolute;
-  left: 21vw;
+  left: 12vw;
 }
 
 .item-img {
   height: 40vh;
   display: block;
   max-width: 0;
-  transition: width, .5s ease-out;
-  transition-delay: 1s;
+  transition: all 1s;
+  transition-delay: 1.2s;
+  cursor: pointer;
+}
+
+.item-img:hover {
+  transform: scale(1.1);
+}
+
+.img-wrapper {
+  height: 100%;
+  max-width: 33vw;
+  overflow: hidden;
 }
 
 .text-header {
@@ -114,13 +135,24 @@ export default {
   position: absolute;
   right: 30vw;
   opacity: 0;
+  font-size: 24px;
+  letter-spacing: 6px;
+}
+
+.text-header---left {
+  padding-left: 3vw;
+}
+
+.text-header---right {
+  text-align: right;
+  padding-right: 3vw;
+  width: 40vw;
 }
 
 .text-header-first {
   animation: slideInTextHeaderFromLeft 1s;
-  animation-delay: 1.5s;
+  animation-delay: 1.3s;
   animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
 }
 
 .text-header-first--no-animation {
@@ -134,13 +166,18 @@ export default {
   width: 30vw;
   overflow: hidden;
   position: relative;
+  margin-bottom: 3rem;
+}
+
+.text-header-wrapper--right {
+  width: 40vw;
 }
 
 .text-box {
-  width: 30vw;
+  margin-top: 7vh;
+  width: 40vw;
   position: relative;
   margin-left: 10px;
-  align-self: center;
 }
 
 .text-wrapper {
@@ -150,25 +187,36 @@ export default {
 
 .text {
   font-family: Roboto, sans-serif;
-  width: 30vw;
+  width: 40vw;
   position: absolute;
   top: 0;
   left: 33vw;
   opacity: 0;
   z-index: -1;
+  font-size: 1.6vh;
+  letter-spacing: 1px;
+  line-height: 3vh;
 }
 
 .text-first {
   animation: slideInTextFromRight 1s;
   animation-delay: 1.5s;
   animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
 }
 
 .text-first--no-animation {
   animation: none;
   opacity: 1;
   left: 0;
+}
+
+.text--left {
+  padding-left: 5vw;
+}
+
+.text--right {
+  text-align: right;
+  padding-right: 5vw;
 }
 
 @keyframes fadeOut {

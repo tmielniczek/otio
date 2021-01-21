@@ -8,11 +8,11 @@
         v-if="currentProjectOverview > 0"
         class="arrow arrow--left"
         @click="onArrowLeftClick"></div>
-    <div class="grey-background"></div>
-    <div class="realization">
+    <div class="grey-background" v-if="isProjectsOverviewVisible"></div>
+    <div class="realization" v-if="isProjectsOverviewVisible">
       <div class="realization-header">Realizacje</div>
     </div>
-    <div class="realization-content">
+    <div class="realization-content" v-if="isProjectsOverviewVisible">
       <div v-for="project of projectsOverviews" :key="project">
         <ProjectOverviewElement v-show="project.show"
                                 :is-first-project="project.isFirstProject"
@@ -60,10 +60,33 @@ export default {
         },
       ],
       currentProjectOverview: 0,
-      show: false
+      show: false,
+      isProjectsOverviewVisible: false
     }
+  }, mounted() {
+    this.setIntersectionObserver(this.setSth);
   },
   methods: {
+    setIntersectionObserver: function (callback) {
+      let counter = 0;
+      let options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.7
+      }
+
+      let observer = new IntersectionObserver(() => {
+        if (counter > 0) {
+          callback()
+        }
+        counter++;
+      }, options);
+
+      observer.observe(document.getElementsByClassName('realizations')[0])
+    },
+    setSth() {
+      this.isProjectsOverviewVisible = true;
+    },
     onArrowRightClick() {
       this.projectsOverviews[this.currentProjectOverview].isFadeOutAnimation = true;
       setTimeout(() => {
@@ -89,6 +112,7 @@ export default {
 
 <style scoped>
 @import "../styles/animation.css";
+
 .arrow {
   border: solid black;
   border-width: 0 2px 2px 0;
@@ -124,17 +148,19 @@ export default {
 }
 
 .realization-content {
-  width: 80vw;
+  width: 85vw;
   height: 100%;
-  margin: 10vh 0 10vh 7.5vw;
+  margin: 10vh 7.5vw 10vh 7.5vw;
   position: relative;
 }
 
 .realization {
   position: absolute;
+  bottom: -100vh;
   width: 5vw;
   height: 80vh;
   animation: slideInBottom 1s;
+  animation-delay: .3s;
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
 }
@@ -157,7 +183,9 @@ export default {
   width: 70vw;
   left: 5vw;
   z-index: -1;
+  bottom: -100vh;
   animation: slideInBottom 1s;
+  animation-delay: .3s;
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
 }

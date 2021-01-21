@@ -34,7 +34,7 @@ import ProjectGalleryImages from "@/components/ProjectGalleryImages";
 import ProjectGalleryDescription from "@/components/ProjectGalleryDescription";
 
 export default {
-  name: "Project",
+  name: "ProjectGallery",
   components: {ProjectGalleryImages, ProjectGalleryDescription},
   data: function () {
     return {
@@ -143,7 +143,7 @@ export default {
 }
 
 .project-gallery-images-wrapper {
-  overflow: hidden;
+  overflow: scroll;
   width: 66vw;
   height: inherit;
   position: relative;
