@@ -1,5 +1,6 @@
 <template>
   <div class="home" id="home" v-bind:class="{homeOverflowHidden: homeOverflowHidden}">
+    <div class="background" v-bind:class="{backgroundAnimation: backgroundAnimation}" ref="homeBackground"></div>
     <TitlePage></TitlePage>
     <ProjectsOverview @img-click="onImageClick"></ProjectsOverview>
     <div class="home__project" v-if="isProject" ref="projectGallery">
@@ -20,7 +21,8 @@ export default {
     return {
       isProject: false,
       homeProjectAnimate: false,
-      homeOverflowHidden: false
+      homeOverflowHidden: false,
+      backgroundAnimation: false
     }
   },
   methods: {
@@ -30,8 +32,10 @@ export default {
         this.isProject = false;
       }
       this.isProject = true;
+      this.$refs.homeBackground.style.top = -1 * document.getElementsByClassName('page-two')[0].getBoundingClientRect().top + 'px';
+      this.backgroundAnimation = true;
       setTimeout(() => {
-        let translateXValue = window.innerHeight +  document.getElementsByClassName('realizations')[0].getBoundingClientRect().top;
+        let translateXValue = window.innerHeight + document.getElementsByClassName('realizations')[0].getBoundingClientRect().top;
         this.$refs.projectGallery.style.transform = `translateY(-${translateXValue}px)`;
         this.$refs.projectGallery.style.transition = 'transform 1s cubic-bezier(.7, 0, .2, 1)';
         this.homeProjectAnimate = true
@@ -68,5 +72,20 @@ export default {
 .homeProjectAnimate {
   transform: translateY(-1500px);
   transition: transform 1s cubic-bezier(.7, 0, .2, 1);
+}
+
+.background {
+  left: 0;
+  top: 0;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, .2);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.backgroundAnimation {
+  opacity: 1;
+  transition: opacity 1s cubic-bezier(.68, 0, .42, 1);
 }
 </style>
