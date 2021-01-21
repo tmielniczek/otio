@@ -45,17 +45,17 @@ export default {
   margin: 0 auto;
   width: fit-content;
   font-size: 36px;
-  animation: fadein .5s;
+  animation: fadein 2s;
 }
 
 .page-two {
-  display: none;
   height: 100vh;
   width: 100%;
   background-image: url("../assets/otio-2.png");
   background-repeat: no-repeat;
   background-size: cover;
   animation: fadein .5s;
+  animation-delay: 2s;
 }
 
 .scroll-btn {
@@ -64,6 +64,8 @@ export default {
   left: 50vw;
   transform: translateX(-50%);
   cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 
